@@ -4,28 +4,32 @@ import (
 	"api-main/mesa/application"
 	"api-main/mesa/domain"
 	"api-main/mesa/infraestructure"
-
-	// "api-main/mesa/infraestructure"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func CreateMesa(c *gin.Context) {
-
 	var mesa domain.Mesa
 
-	if err:= c.ShouldBindJSON(mesa);err!=nil{
-		c.JSON(http.StatusNoContent,gin.H{"error":"no se encontro datos en la solicitud"})
+	// Corregido: Usar `&mesa` y devolver 400 en caso de error
+	if err := c.ShouldBindJSON(&mesa); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No se encontraron datos en la solicitud"})
+		return
 	}
 
-	repo:=infraestructure.NewMySQLRepository()
-	useCase:=application.NewCreateMesa(repo)
+	repo := infraestructure.NewMySQLRepository()
+	useCase := application.NewCreateMesa(repo)
 
-	if err:=useCase.Execute(&mesa);err!=nil{
-		c.JSON(http.StatusBadRequest,gin.H{"error":"error al ejecutar la solicitud"})
+	// Corregido: Manejar error correctamente y detener ejecución
+	if err := useCase.Execute(&mesa); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error al ejecutar la solicitud"})
+		return
 	}
 
-	c.JSON(http.StatusAccepted,gin.H{"ok":"se creo con exito"}) 
-
+	// Respuesta correcta con 201 Created
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Mesa creada exitosamente",
+		"data":    mesa,
+	})
 }

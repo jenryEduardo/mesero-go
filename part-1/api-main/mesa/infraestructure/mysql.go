@@ -16,8 +16,8 @@ func NewMySQLRepository() *MySQLRepository {
 
 
 func (r *MySQLRepository)Save(mesa *domain.Mesa)error{
-query:=("INSERT INTO mesa(status)(?)")
-_,err:=r.conn.DB.Exec(query,mesa.Status)
+	query := "INSERT INTO mesa(status) VALUES (?)"
+	_,err:=r.conn.DB.Exec(query,mesa.Status)
 	if err!=nil{
 		return err
 	}
@@ -26,7 +26,7 @@ _,err:=r.conn.DB.Exec(query,mesa.Status)
 
 func (r *MySQLRepository)Update(id int,mesa domain.Mesa)error{
 
-	query:=("UPDATE mesa SET status WHERE idMesa=?")
+	query := "UPDATE mesa SET status=? WHERE idMesa=?"
 	_,err:=r.conn.DB.Exec(query,mesa.Status,id)
 return err
 }
