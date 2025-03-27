@@ -10,29 +10,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UpdateMesa(c *gin.Context){
+func UpdateMesa(c *gin.Context) {
+	idString := c.Param("idMesa")
 
-	id_string:=c.Param("idMesa")
-
-	id,err:=strconv.Atoi(id_string)
-
+	// Convertir ID a entero
+	id, err := strconv.Atoi(idString)
 	if err != nil {
-		c.JSON(http.StatusNotFound,gin.H{"error":"no se pudo obtener un id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo obtener un ID válido"})
+		return
 	}
 
 	var mesa domain.Mesa
 
+
 	if err:=c.ShouldBindJSON(&mesa);err!=nil{
 		c.JSON(http.StatusNotFound,gin.H{"error":"no se pudo deszerializar el json"})
+
+
+	repo := infraestructure.NewMySQLRepository()
+	useCase := application.NewUpdateMesa(repo)
+
+	// Corregido: Manejar error correctamente
+	if err := useCase.Execute(id, &mesa); err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		return
 	}
 
-	repo:=infraestructure.NewMySQLRepository()
-	useCase:=application.NewUpdateMesa(repo)
-
-	if err:=useCase.Execute(id,&mesa);err!=nil{
-		c.JSON(http.StatusBadGateway,gin.H{"error":err})
-	}
-
-	c.JSON(http.StatusAccepted,gin.H{"succesfull":"se actualizo la mesa correctemente"})
-
+	// Respuesta correcta con 202 Accepted
+	c.JSON(http.StatusAccepted, gin.H{"success": "Se actualizó la mesa correctamente"})
+}
 }
