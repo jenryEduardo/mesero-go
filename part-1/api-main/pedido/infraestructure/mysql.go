@@ -15,6 +15,9 @@ func NewMySQLRepository() *MySQLRepository {
 }
 
 
+
+
+
 func (r *MySQLRepository)Save(pedido *domain.Pedido)error{
 	query:=("INSERT INTO pedido(idMesa,nombre_cliente,status,total)(?,?,?,?)")
 	_,err:=r.conn.DB.Exec(query,pedido.IdMesa,pedido.Nombre_cliente,pedido.Status,pedido.Total)

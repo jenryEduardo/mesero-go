@@ -14,3 +14,6 @@ func SetUpRoutes(routes *gin.Engine){
 	router.DELETE("/:idPedido",controllers.DeletePedido)
 	router.PUT("/:idPedido",controllers.UpdatePedido)
 }
+
+
+

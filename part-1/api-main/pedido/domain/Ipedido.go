@@ -6,4 +6,5 @@ type Ipedido interface{
 	Delete(id int)error
 	GetAll()([]Pedido,error)
 	GetById(id int)([]Pedido,error)
+	
 }

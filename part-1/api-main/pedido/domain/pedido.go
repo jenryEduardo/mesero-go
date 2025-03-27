@@ -8,3 +8,6 @@ type Pedido struct{
 	Status string
 	Total float64
 }
+
+
+
