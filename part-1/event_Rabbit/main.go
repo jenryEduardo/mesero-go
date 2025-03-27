@@ -30,16 +30,4 @@ func main(){
 	log.Println("Servidor escuchando en el puerto", port)
 	log.Fatal(router.Run(port))
 
-
-
-	
-		
-
-
-
-	
-
-
-
-
 }
