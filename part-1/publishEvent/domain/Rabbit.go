@@ -8,3 +8,7 @@ type RabbitMQ struct{
 	Email string
 	Password string
 }
+
+
+
+

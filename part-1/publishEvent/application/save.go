@@ -16,3 +16,7 @@ func(c *saveInRbbitmq)Execute(data *domain.RabbitMQ)(bool,error){
 	return c.repo.PublishTransaction(data)
 }
 
+
+
+
+
