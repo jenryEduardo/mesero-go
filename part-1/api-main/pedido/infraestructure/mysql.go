@@ -19,8 +19,8 @@ func NewMySQLRepository() *MySQLRepository {
 
 
 func (r *MySQLRepository)Save(pedido *domain.Pedido)error{
-	query:=("INSERT INTO pedido(idMesa,nombre_cliente,status,total)(?,?,?,?)")
-	_,err:=r.conn.DB.Exec(query,pedido.IdMesa,pedido.Nombre_cliente,pedido.Status,pedido.Total)
+	query:=("INSERT INTO pedido(idMesa,idProduct,nombre_cliente,status,total)(?,?,?,?,?)")
+	_,err:=r.conn.DB.Exec(query,&pedido.IdMesa,&pedido.IdProducto,&pedido.Nombre_cliente,&pedido.Status,&pedido.Total)
 	if err!=nil{
 		return err
 	}
@@ -28,8 +28,8 @@ func (r *MySQLRepository)Save(pedido *domain.Pedido)error{
 }
 
 func (r *MySQLRepository)Update(id int,pedido *domain.Pedido)error{
-	query:=("UPDATE pedido SET idMesa=?,nombre_cliente=?,status=?,total=? where idPedido=?")
-	_,err:=r.conn.DB.Exec(query,id)
+	query:=("UPDATE pedido SET idMesa=?,idProduct=?,nombre_cliente=?,status=?,total=? where idPedido=?")
+	_,err:=r.conn.DB.Exec(query,&pedido.IdMesa,&pedido.IdProducto,&pedido.Nombre_cliente,&pedido.Status,&pedido.Total,id)
 	if err!=nil{
 		return err
 	}
@@ -49,7 +49,7 @@ func (r *MySQLRepository)Delete(id int)error{
 }
 
 func (r *MySQLRepository) GetAll() ([]domain.Pedido, error) {
-	query := "SELECT idPedido, idMesa, nombre_cliente, status, total FROM pedido"
+	query := "SELECT idPedido,idProduct ,idMesa, nombre_cliente, status, total FROM pedido"
 	rows, err := r.conn.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (r *MySQLRepository) GetAll() ([]domain.Pedido, error) {
 	var pedidos []domain.Pedido
 	for rows.Next() {
 		var pedido domain.Pedido
-		if err := rows.Scan(&pedido.IdPedido, &pedido.IdMesa, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total); err != nil {
+		if err := rows.Scan(&pedido.IdPedido, &pedido.IdMesa,&pedido.IdProducto, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total); err != nil {
 			return nil, err
 		}
 		pedidos = append(pedidos, pedido)
@@ -74,7 +74,7 @@ func (r *MySQLRepository) GetAll() ([]domain.Pedido, error) {
 
 
 func (r*MySQLRepository)GetById(id int)([]domain.Pedido,error){
-	query:=("SELECT idPedido, idMesa, nombre_cliente, status, total FROM pedido WHERE idPedido=?")
+	query:=("SELECT idPedido,idProduct, idMesa, nombre_cliente, status, total FROM pedido WHERE idPedido=?")
 	rows,err:=r.conn.DB.Query(query,id)
 
 	if err!=nil{
@@ -89,7 +89,7 @@ func (r*MySQLRepository)GetById(id int)([]domain.Pedido,error){
 	for rows.Next(){
 		var pedido domain.Pedido
 
-		if err:=rows.Scan(pedido.IdPedido,pedido.IdMesa,pedido.Nombre_cliente,pedido.Status,pedido.Total);err!=nil{
+		if err:=rows.Scan(&pedido.IdPedido, &pedido.IdMesa,&pedido.IdProducto, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total);err!=nil{
 			return nil,err
 		}
 

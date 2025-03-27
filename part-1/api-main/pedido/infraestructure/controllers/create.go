@@ -13,7 +13,7 @@ func CreatePedido(c *gin.Context){
 
 	var pedido domain.Pedido
 
-	if err:=c.ShouldBindJSON(pedido);err!=nil{
+	if err:=c.ShouldBindJSON(&pedido);err!=nil{
 		c.JSON(http.StatusNotFound,gin.H{"error":"no se encontro nada el archivo json"})
 	}
 
