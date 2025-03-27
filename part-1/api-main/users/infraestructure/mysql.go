@@ -10,10 +10,14 @@ type MySQLRepository struct {
 }
 
 
+
+
 func NewMySQLRepository() *MySQLRepository {
 	conn := core. GetDBPool()
 	return &MySQLRepository{conn: conn}
 }
+
+
 
 func (r *MySQLRepository) Save(p *domain.User) error {
 	query := "INSERT INTO usuarios (name,last_name,email,password) VALUES (?,?,?,?)"

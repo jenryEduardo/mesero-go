@@ -15,3 +15,6 @@ func NewGetUserById(repo domain.Iuser)*GetUserById{
 func (c *GetUserById)Execute(id int)([]domain.User,error){
 	return c.repo.GetUserById(id)
 }
+
+
+

@@ -7,3 +7,6 @@ type Iuser interface{
 	UpdateUser(id int,user *User)error
 	DeleteUser(id int)error
 }
+
+
+

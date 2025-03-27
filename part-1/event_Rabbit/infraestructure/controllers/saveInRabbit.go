@@ -31,6 +31,9 @@ func SaveInRbbitmq(c *gin.Context) {
 		useCase:=application.NewRabbitSave(repo)
 		success,err:=useCase.Execute(&cuenta)
 
+
+
+		
 		if err!=nil{
 			fmt.Println("error al ejecutar la transaccion")
 		}else if success{
