@@ -17,7 +17,7 @@ func NewMySQLRepository() *MySQLRepository {
 
 func (r *MySQLRepository) Save(p *domain.User) error {
 	query := "INSERT INTO usuarios (name,last_name,email,password) VALUES (?,?,?,?)"
-	_, err := r.conn.DB.Exec(query,p.Name,p.Last_name,p.Email,p.Password)
+	_, err := r.conn.DB.Exec(query,&p.Name,&p.Last_name,&p.Email,&p.Password)
 	return err
 }
 
@@ -79,7 +79,7 @@ func (r *MySQLRepository) GetAllUser()([]domain.User,error) {
 
 func (r *MySQLRepository) UpdateUser(id int,p *domain.User) error {
 	query := "UPDATE usuarios SET name=?,last_name=?,email=?,password=? where idUsuario=?"
-	_, err := r.conn.DB.Exec(query,p.Name,p.Last_name,p.Email,p.Password,id)
+	_, err := r.conn.DB.Exec(query,&p.Name,&p.Last_name,&p.Email,&p.Password,id)
 	return err
 }
 

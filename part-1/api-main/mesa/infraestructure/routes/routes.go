@@ -12,7 +12,7 @@ func SetUpRoutes(routes *gin.Engine){
 
 	router.POST("/",controllers.CreateMesa)
 	router.PUT("/:idMesa",controllers.UpdateMesa)
-	router.GET("/idMesa",controllers.GetById)
+	router.GET("/:idMesa",controllers.GetById)
 	router.GET("/",controllers.GetAll)
 	router.DELETE("/:idMesa",controllers.DeleteMesa)
 

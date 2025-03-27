@@ -15,7 +15,7 @@ func CreateMesa(c *gin.Context) {
 
 	var mesa domain.Mesa
 
-	if err:= c.ShouldBindJSON(mesa);err!=nil{
+	if err:= c.ShouldBindJSON(&mesa);err!=nil{
 		c.JSON(http.StatusNoContent,gin.H{"error":"no se encontro datos en la solicitud"})
 	}
 

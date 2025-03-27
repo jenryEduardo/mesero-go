@@ -16,7 +16,7 @@ func NewMySQLRepository() *MySQLRepository {
 
 
 func (r *MySQLRepository)Save(producto *domain.Producto)error{
-	query:=("INSERT INTO productos(nombre,precio,descripcion,tipo)(?,?,?,?)")
+	query:=("INSERT INTO productos(nombre,precio,descripcion,tipo)VALUES(?,?,?,?)")
 	_,err:=r.conn.DB.Exec(query,producto.Nombre,producto.Precio,producto.Descripcion,producto.Tipo)
 	if err!=nil{
 		return err
@@ -46,7 +46,7 @@ func (r *MySQLRepository)Delete(id int)error{
 }
 
 func (r *MySQLRepository) GetAll() ([]domain.Producto, error) {
-	query := "SELECT idProducto,nombre,precio, descripcion, tipo FROM productos"
+	query := "SELECT idProducto,nombre,precio,descripcion,tipo FROM productos"
 	rows, err := r.conn.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (r *MySQLRepository) GetAll() ([]domain.Producto, error) {
 	var pedidos []domain.Producto
 	for rows.Next() {
 		var pedido domain.Producto
-		if err := rows.Scan(&pedido.IdProducto,pedido.Nombre,pedido.Precio,pedido.Descripcion,pedido.Tipo); err != nil {
+		if err := rows.Scan(&pedido.IdProducto,&pedido.Nombre,&pedido.Precio,&pedido.Descripcion,&pedido.Tipo); err != nil {
 			return nil, err
 		}
 		pedidos = append(pedidos, pedido)
@@ -84,7 +84,7 @@ func (r*MySQLRepository)GetById(id int)([]domain.Producto,error){
 	var pedidos []domain.Producto
 	for rows.Next() {
 		var pedido domain.Producto
-		if err := rows.Scan(&pedido.IdProducto,pedido.Nombre,pedido.Precio,pedido.Descripcion,pedido.Tipo); err != nil {
+		if err := rows.Scan(&pedido.IdProducto,&pedido.Nombre,&pedido.Precio,&pedido.Descripcion,&pedido.Tipo); err != nil {
 			return nil, err
 		}
 		pedidos = append(pedidos, pedido)

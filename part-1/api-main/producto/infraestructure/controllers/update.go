@@ -22,7 +22,7 @@ func UpdateProduct(c *gin.Context) {
 
 	var producto domain.Producto
 
-	if err:=c.ShouldBindJSON(producto);err!=nil{
+	if err:=c.ShouldBindJSON(&producto);err!=nil{
 		c.JSON(http.StatusNotFound,gin.H{"error":"no se pudo encontrar nada el json de la solicitud"})
 	}
 

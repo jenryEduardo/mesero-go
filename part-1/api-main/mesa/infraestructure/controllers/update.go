@@ -22,7 +22,7 @@ func UpdateMesa(c *gin.Context){
 
 	var mesa domain.Mesa
 
-	if err:=c.ShouldBindJSON(mesa);err!=nil{
+	if err:=c.ShouldBindJSON(&mesa);err!=nil{
 		c.JSON(http.StatusNotFound,gin.H{"error":"no se pudo deszerializar el json"})
 	}
 
