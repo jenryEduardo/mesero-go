@@ -1,6 +1,6 @@
 package application
 
-import "api-main/producto/domain"
+import "api-main/pedido/producto/domain"
 
 type GetByIdOProducts struct {
 	repo domain.Iproducto

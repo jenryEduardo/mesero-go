@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"api-main/producto/infraestructure/controllers"
+	"api-main/pedido/producto/infraestructure/controllers"
 )
 
 func SetUpRoutes(routes *gin.Engine){
