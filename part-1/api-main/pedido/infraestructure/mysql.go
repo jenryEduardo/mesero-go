@@ -15,21 +15,50 @@ func NewMySQLRepository() *MySQLRepository {
 }
 
 
-
-
-
-func (r *MySQLRepository)Save(pedido *domain.Pedido)error{
-	query:=("INSERT INTO pedido(idMesa,idProduct,nombre_cliente,status,total)(?,?,?,?,?)")
-	_,err:=r.conn.DB.Exec(query,&pedido.IdMesa,&pedido.IdProducto,&pedido.Nombre_cliente,&pedido.Status,&pedido.Total)
-	if err!=nil{
-		return err
+func (r *MySQLRepository)Save(pedido *domain.Pedido)(int64,error){
+	// Insertar el pedido en la tabla "pedido"
+	result, err := r.conn.DB.Exec("INSERT INTO pedido (idMesa, nombre_cliente, status, total) VALUES (?, ?, ?, ?)",
+	&pedido.IdMesa, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total)
+	if err != nil {
+		return 0,err
 	}
-	return err
+
+	// Obtener el ID del pedido recién insertado
+	pedidoID, err := result.LastInsertId()
+	if err != nil {
+		return  0,err
+	}
+
+	// Insertar los productos en la tabla "detalles_pedido"
+	for _, detalle := range pedido.Detalles {
+		_, err := r.conn.DB.Exec("INSERT INTO detalles_pedido (idPedido, idProducto, nombre_producto, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)",
+			pedidoID, detalle.IdProducto, detalle.NombreProducto, detalle.Cantidad, detalle.PrecioUnitario, detalle.Subtotal)
+		if err != nil {
+			return 0,err
+		}
+	}
+
+	// Actualizar el total del pedido
+	_, err = r.conn.DB.Exec("UPDATE pedido SET total = (SELECT SUM(subtotal) FROM detalles_pedido WHERE idPedido = ?) WHERE idPedido = ?", pedidoID, pedidoID)
+	if err != nil {
+		return  0,err
+	}
+
+	return pedidoID,err
+}
+
+func (r*MySQLRepository)ObtenerTotalPedido(idPedido int) (float64, error) {
+	var total float64
+	err := r.conn.DB.QueryRow("SELECT SUM(subtotal) FROM detalles_pedido WHERE id_pedido = ?", idPedido).Scan(&total)
+	if err != nil {
+		return 0, err
+	}
+	return total, nil
 }
 
 func (r *MySQLRepository)Update(id int,pedido *domain.Pedido)error{
 	query:=("UPDATE pedido SET idMesa=?,idProduct=?,nombre_cliente=?,status=?,total=? where idPedido=?")
-	_,err:=r.conn.DB.Exec(query,&pedido.IdMesa,&pedido.IdProducto,&pedido.Nombre_cliente,&pedido.Status,&pedido.Total,id)
+	_,err:=r.conn.DB.Exec(query,&pedido.IdMesa,&pedido.Nombre_cliente,&pedido.Status,&pedido.Total,id)
 	if err!=nil{
 		return err
 	}
@@ -59,7 +88,7 @@ func (r *MySQLRepository) GetAll() ([]domain.Pedido, error) {
 	var pedidos []domain.Pedido
 	for rows.Next() {
 		var pedido domain.Pedido
-		if err := rows.Scan(&pedido.IdPedido, &pedido.IdMesa,&pedido.IdProducto, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total); err != nil {
+		if err := rows.Scan(&pedido.IdPedido, &pedido.IdMesa, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total); err != nil {
 			return nil, err
 		}
 		pedidos = append(pedidos, pedido)
@@ -89,7 +118,7 @@ func (r*MySQLRepository)GetById(id int)([]domain.Pedido,error){
 	for rows.Next(){
 		var pedido domain.Pedido
 
-		if err:=rows.Scan(&pedido.IdPedido, &pedido.IdMesa,&pedido.IdProducto, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total);err!=nil{
+		if err:=rows.Scan(&pedido.IdPedido, &pedido.IdMesa, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total);err!=nil{
 			return nil,err
 		}
 

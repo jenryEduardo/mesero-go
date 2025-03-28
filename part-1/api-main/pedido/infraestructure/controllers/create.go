@@ -20,11 +20,12 @@ func CreatePedido(c *gin.Context){
 	repo:=infraestructure.NewMySQLRepository()
 	useCase:=application.NewSavePedido(repo)
 
-	if err:=useCase.Execute(pedido);err!=nil{
+	 id,err:=useCase.Execute(pedido);
+	if err!=nil{
 		c.JSON(http.StatusBadRequest,gin.H{"error":err})
 	}
-
-	c.JSON(http.StatusOK,gin.H{"ok":"se creo correctamente el pedido"})
+  
+	c.JSON(http.StatusOK,gin.H{"ok":id})
 
 
 }
