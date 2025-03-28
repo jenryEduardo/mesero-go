@@ -7,5 +7,5 @@ type Ipedido interface{
 	ObtenerTotalPedido(id int)(float64, error)
 	GetAll()([]Pedido,error)
 	GetById(id int)([]Pedido,error)
-	
+	AgregarNuevoProducto(idPedido int,pedido *DetallesPedido)error
 }

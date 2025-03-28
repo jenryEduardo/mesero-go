@@ -45,6 +45,20 @@ func (r *MySQLRepository)Save(pedido *domain.Pedido)(int64,error){
 	}
 
 	return pedidoID,err
+}  
+
+func (r *MySQLRepository)AgregarNuevoProducto(idPedido int,detalle *domain.DetallesPedido)error{
+	_, err := r.conn.DB.Exec("INSERT INTO detalles_pedido (idPedido, idProducto,nombre_producto, cantidad, precio_unitario, subtotal) VALUES (?,?, ?, ?, ?, ?)",
+	idPedido, &detalle.IdProducto,&detalle.NombreProducto, &detalle.Cantidad, &detalle.PrecioUnitario, &detalle.Subtotal)
+
+		if err != nil {
+			return err
+		}
+
+		// Actualizar el total del pedido
+		r.conn.DB.Exec("UPDATE pedido SET total = (SELECT SUM(subtotal) FROM detalles_pedido WHERE idPedido = ?) WHERE idPedido = ?", idPedido, idPedido)
+
+		return err
 }
 
 func (r*MySQLRepository)ObtenerTotalPedido(idPedido int) (float64, error) {
