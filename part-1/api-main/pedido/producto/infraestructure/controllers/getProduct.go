@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"api-main/producto/application"
-	"api-main/producto/infraestructure"
+	"api-main/pedido/producto/application"
+	"api-main/pedido/producto/infraestructure"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

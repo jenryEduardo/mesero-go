@@ -2,7 +2,7 @@ package infraestructure
 
 import (
 	"api-main/core"
-	"api-main/producto/domain"
+	"api-main/pedido/producto/domain"
 )
 
 type MySQLRepository struct {
