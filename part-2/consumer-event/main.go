@@ -1,89 +1,27 @@
 package main
 
-// import (
-// 	"bytes"
-// 	rabbitmq "consumer-event/rabbitMQ"
-// 	"encoding/json"
-// 	"log"
-// 	"net/http"
+import (
+	consumerRoutes "consumer-event/infraestructure/routes"
+	"log"
 
-// 	amqp "github.com/rabbitmq/amqp091-go"
-// )
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+)
 
-// func main() {
-	
-// 	rabbit, err := rabbitmq.NewRabbitMQ()
-// 	if err != nil {
-// 		log.Fatalf("Error al inicializar RabbitMQ: %v", err)
-// 	}
+func main() {
+	router := gin.Default()
 
-// 	// obtiene los mensajes de rabbit
-// 	msgs := rabbit.
+	// Configurar CORS
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+	}))
 
-// 	// Procesar los mensajes
-// 	ProcessMessage(msgs)
-// }
+	consumerRoutes.Routes(router)
 
-// // par procesar los mensajes de rabbit
-// func ProcessMessage(msgs <-chan amqp.Delivery) {
-// 	forever := make(chan struct{})
-
-// 	//  el goroutine para pdoer procesar los mensajes
-// 	go func() {
-// 		for d := range msgs {
-// 			var inscription models.Inscription
-
-			
-// 			err := json.Unmarshal(d.Body, &inscription)
-// 			if err != nil {
-// 				log.Printf("Error al decodificar el mensaje: %s", err)
-// 				continue
-// 			}
-
-// 			log.Printf("[x] Inscripción recibida: ID Estudiante %d, ID Curso %d", inscription.StudentID, inscription.CourseID)
-
-// 			// realiza la peticion para la validacion ala api2
-// 			Fetch(inscription)
-// 		}
-// 	}()
-
-// 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-// 	<-forever
-// }
-
-// // realizar el post a la api2
-// func Fetch(inscription models.Inscription) {
-// 	url := "http://4.194.176.57:8081/inscriptions/validate" 
-
-// 	// vualve el objeto a JSON
-// 	jsonPayload, err := json.Marshal(inscription)
-// 	if err != nil {
-// 		log.Fatalf("Error al serializar la inscripción: %v", err)
-// 	}
-	
-// 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonPayload))
-// 	if err != nil {
-// 		log.Fatalf("Error al hacer la petición: %v", err)
-// 	}
-// 	defer resp.Body.Close()
-
-// 	if resp.StatusCode != 200 {
-// 		log.Fatalf("Error al procesar la inscripción, código: %d", resp.StatusCode)
-// 	}
-
-// 	//lee lo que viene de la api
-// 	var result struct {
-// 		Status string `json:"status"`
-// 	}
-// 	err = json.NewDecoder(resp.Body).Decode(&result)
-// 	if err != nil {
-// 		log.Fatalf("Error al decodificar la respuesta de la API: %v", err)
-// 	}
-
-// 	// respuesta hace::
-// 	if result.Status == "aceptada" {
-// 		log.Println("Inscripción aceptada")
-// 	} else {
-// 		log.Println("Inscripción rechazada")
-// 	}
-// }
+	port := ":3000"
+	log.Println("Servidor escuchando en el puerto", port)
+	log.Fatal(router.Run(port))
+}
