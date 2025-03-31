@@ -43,4 +43,3 @@ func DeleteRobot() *controllers.DeleteRobotCtrl {
 	ucDeleteRobot := application.NewDeleteRobot(&mySQL)
 	return controllers.NewDeleteRobotCtrl(ucDeleteRobot)
 }
-

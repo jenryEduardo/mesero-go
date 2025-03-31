@@ -16,8 +16,8 @@ func NewMySQLRepository(db *sql.DB) *MySQLRepository {
 }
 
 func (r *MySQLRepository) Save(historial domain.Historial) error {
-	query:= "INSERT INTO historial_entrega(idRobot, estatus_entrega, percanses) VALUES(?,?,?)"
-	_, err := r.db.Exec(query, historial.IdRobot, historial.Estatus_entrega, historial.Percanses)
+	query:= "INSERT INTO historial_entrega(idPedido,idCircuito, idRobot, estatus_entrega) VALUES(?,?,?,?)"
+	_, err := r.db.Exec(query, historial.IdPedido,historial.IdCircuito, historial.IdRobot, historial.Estatus_entrega)
 	if err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func (r *MySQLRepository) Save(historial domain.Historial) error {
 }
 
 func (r *MySQLRepository) GetAll()([]domain.Historial, error) {
-	query:= "SELECT id_historial, idRobot, estatus_entrega, percanses FROM historial_entrega"
+	query:= "SELECT id_historial, idPedido,idCircuito, idRobot, estatus_entrega FROM historial_entrega"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (r *MySQLRepository) GetAll()([]domain.Historial, error) {
 
 	for rows.Next() {
 		var h domain.Historial
-		if err := rows.Scan(&h.IdHistorial, &h.IdRobot, &h.Estatus_entrega, &h.Percanses); err != nil {
+		if err := rows.Scan(&h.IdHistorial, &h.IdPedido,&h.IdCircuito, &h.IdRobot, &h.Estatus_entrega); err != nil {
 			return nil, err
 		}
 		historial = append(historial, h)
@@ -49,7 +49,7 @@ func (r *MySQLRepository) GetAll()([]domain.Historial, error) {
 }
 
 func (r *MySQLRepository) GetById(idHistorial int) ([]domain.Historial, error) {
-	query := "SELECT id_historial, idRobot, estatus_entrega, percanses FROM historial_entrega WHERE id_historial=?"
+	query := "SELECT id_historial, idPedido, idCircuito, idRobot, estatus_entrega FROM historial_entrega WHERE id_historial=?"
 
 	rows, err := r.db.Query(query, idHistorial)
 	if err != nil {
@@ -63,7 +63,7 @@ func (r *MySQLRepository) GetById(idHistorial int) ([]domain.Historial, error) {
 	for rows.Next() {
 		var h domain.Historial
 
-		if err := rows.Scan(&h.IdHistorial, &h.IdRobot, &h.Estatus_entrega, &h.Percanses); err != nil {
+		if err := rows.Scan(&h.IdHistorial, &h.IdPedido,&h.IdCircuito, &h.IdRobot, &h.Estatus_entrega); err != nil {
 			return nil, err
 		}
 		historial = append(historial, h)
@@ -76,8 +76,8 @@ func (r *MySQLRepository) GetById(idHistorial int) ([]domain.Historial, error) {
 }
 
 func (r *MySQLRepository) Update(idHistorial int, historial domain.Historial) error {
-	query := "UPDATE historial_entrega SET idRobot=?, estatus_entrega=?, percanses=? WHERE id_historial=?"
-	_, err := r.db.Exec(query, historial.IdRobot, historial.Estatus_entrega, historial.Percanses, idHistorial)
+	query := "UPDATE historial_entrega SET idPedido=?, idCircuito=?, idRobot=?, estatus_entrega=? WHERE id_historial=?"
+	_, err := r.db.Exec(query, historial.IdPedido,historial.IdCircuito, historial.IdRobot, historial.Estatus_entrega, idHistorial)
 	if err != nil {
 		return err
 	}

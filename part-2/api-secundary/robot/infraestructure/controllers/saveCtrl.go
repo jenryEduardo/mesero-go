@@ -36,11 +36,7 @@ func (ctrl *SaveRobotCtrl) Run(c *gin.Context) {
 				"type": "robot",
 				"idRobot": robot.IdRobot,
 				"attributes": gin.H{
-					"idPedido": robot.IdPedido,
-					"idCircuito": robot.IdCircuito,
 					"alias": robot.Alias,
-					"mantenimiento": robot.Mantenimiento,
-					"fecha_de_mantenimiento": robot.Fecha_de_mantenimiento,
 				},
 			},
 		})

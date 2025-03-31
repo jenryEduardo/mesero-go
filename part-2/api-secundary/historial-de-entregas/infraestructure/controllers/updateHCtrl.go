@@ -42,9 +42,10 @@ func (ctrl *UpdateHistorialCtrl) Run(c *gin.Context) {
 				"type":"Historial de entrega",
 				"id Historial": historial.IdHistorial,
 				"attributes": gin.H{
+					"ID del Pedido":historial.IdPedido,
+					"ID del circuito":historial.IdCircuito,
 					"ID del robot": historial.IdRobot,
 					"Estatus de la entrega": historial.Estatus_entrega,
-					"Percanses": historial.Percanses,
 				},
 			},
 		})

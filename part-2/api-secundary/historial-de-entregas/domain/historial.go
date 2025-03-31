@@ -6,5 +6,4 @@ type Historial struct {
 	IdCircuito int 
 	IdRobot int 			`json:"idRobot"`
 	Estatus_entrega string 	`json:"estatus_entrega"`
-	Percanses string 		`json:"percanses"` //Eliminar
 }

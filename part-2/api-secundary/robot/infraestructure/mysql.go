@@ -14,8 +14,8 @@ func NewMySQLRepository(db *sql.DB) *MySQLRepository {
 }
 
 func (r *MySQLRepository) Save(robot domain.Robot) error {
-	query := "INSERT INTO robot(idPedido, idCircuito, alias, Mantenimiento, fecha_De_Mantenimiento) VALUES(?, ?, ?, ?, ?)"
-	_, err := r.db.Exec(query, robot.IdPedido, robot.IdCircuito, robot.Alias, robot.Mantenimiento, robot.Fecha_de_mantenimiento)
+	query := "INSERT INTO robot(alias) VALUES (?)"
+	_, err := r.db.Exec(query, robot.Alias )
 	if err != nil {
 		return err
 	}
@@ -23,7 +23,7 @@ func (r *MySQLRepository) Save(robot domain.Robot) error {
 }
 
 func (r *MySQLRepository) GetAll() ([]domain.Robot, error) {
-	query:= "SELECT idRobot, idPedido, idCircuito, alias, Mantenimiento, fecha_De_Mantenimiento FROM robot"
+	query:= "SELECT idRobot, alias FROM robot"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (r *MySQLRepository) GetAll() ([]domain.Robot, error) {
 	var robots []domain.Robot
 	for rows.Next() {
 		var robot domain.Robot
-		if err := rows.Scan(&robot.IdRobot, &robot.IdPedido, &robot.IdCircuito, &robot.Alias, &robot.Mantenimiento, &robot.Fecha_de_mantenimiento); err != nil {
+		if err := rows.Scan(&robot.IdRobot, &robot.Alias); err != nil {
 			return nil, err
 		}
 		robots = append(robots, robot)
@@ -46,8 +46,8 @@ func (r *MySQLRepository) GetAll() ([]domain.Robot, error) {
 }
 
 func (r *MySQLRepository) Update(id int, robot domain.Robot) error {
-	query := "UPDATE robot SET idPedido=?, idCircuito=?, alias=?, Mantenimiento=?, fecha_De_Mantenimiento=? WHERE idRobot=?"
-	_, err := r.db.Exec(query, robot.IdPedido, robot.IdCircuito, robot.Alias, robot.Mantenimiento, robot.Fecha_de_mantenimiento, id)
+	query := "UPDATE robot SET alias=? WHERE idRobot=?"
+	_, err := r.db.Exec(query, robot.Alias, id)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func (r *MySQLRepository) Delete(id int) error {
 }
 
 func (r *MySQLRepository) GetById(id int) ([]domain.Robot, error) {
-	query := "SELECT idRobot, idPedido, idCircuito, alias, Mantenimiento, fecha_De_Mantenimiento FROM robot WHERE idRobot=?"
+	query := "SELECT idRobot, alias FROM robot WHERE idRobot=?"
 	rows, err := r.db.Query(query, id)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (r *MySQLRepository) GetById(id int) ([]domain.Robot, error) {
 	var robots []domain.Robot
 	for rows.Next() {
 		var robot domain.Robot
-		if err := rows.Scan(&robot.IdRobot, &robot.IdPedido, &robot.IdCircuito, &robot.Alias, &robot.Mantenimiento, &robot.Fecha_de_mantenimiento); err != nil {
+		if err := rows.Scan(&robot.IdRobot, &robot.Alias); err != nil {
 			return nil, err
 		}
 		robots = append(robots, robot)
