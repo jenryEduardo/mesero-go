@@ -17,6 +17,7 @@ func NewMySQLRepository() *MySQLRepository {
 
 func (r *MySQLRepository)Save(pedido *domain.Pedido)(int64,error){
 	// Insertar el pedido en la tabla "pedido"
+	//recuerda que el front debe mandar siempre status pendiente
 	result, err := r.conn.DB.Exec("INSERT INTO pedido (idMesa, nombre_cliente, status, total) VALUES (?, ?, ?, ?)",
 	&pedido.IdMesa, &pedido.Nombre_cliente, &pedido.Status, &pedido.Total)
 	if err != nil {
