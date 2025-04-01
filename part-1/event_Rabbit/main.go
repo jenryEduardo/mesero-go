@@ -26,7 +26,7 @@ func main(){
 	countsRoutes.SetUp(router)
 	
 
-	port := ":3000"
+	port := ":3002"
 	log.Println("Servidor escuchando en el puerto", port)
 	log.Fatal(router.Run(port))
 

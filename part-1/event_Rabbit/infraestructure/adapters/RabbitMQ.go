@@ -15,7 +15,7 @@
 
 	// Constructor para RabbitMQRepository
 	func NewRabbitMQRepository() (*RabbitMQRepository, error) {
-		conn, err := amqp.Dial("amqp://guest:guest@13.217.71.115:5672/")
+		conn, err := amqp.Dial("amqp://diedgo:rabbit666@18.232.202.247:5672/")
 		if err != nil {
 			return nil, fmt.Errorf("Error conectando a RabbitMQ: %v", err)
 		}
@@ -60,7 +60,7 @@
 		responseChan := make(chan bool)
 
 		go func() {
-			respConn, _ := amqp.Dial("amqp://guest:guest@13.217.71.115:5672/")
+			respConn, _ := amqp.Dial("amqp://diedgo:rabbit666@18.232.202.247:5672/")
 			defer respConn.Close()
 
 			respCh, _ := respConn.Channel()
