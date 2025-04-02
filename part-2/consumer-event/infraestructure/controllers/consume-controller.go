@@ -1,22 +1,23 @@
 package controllers
 
 import (
-	"consumer2/application"
-	"consumer2/infraestructure/adapters"
+	"consumer-event/application"
+	"consumer-event/infraestructure/adapters"
 	"fmt"
+	"log"
+
 	"github.com/gin-gonic/gin"
 )
 
 func Consumer(c *gin.Context) {
+
+
 	repo, err := adapters.NewRabbitMQRepository()
-	if err != nil {
-		fmt.Println("❌ Error al conectarse a RabbitMQ:", err)
-		c.JSON(500, gin.H{"error": "Error al conectar con RabbitMQ"})
-		return
-	}
+if err != nil {
+    log.Fatalf("Error inicializando RabbitMQ: %v", err)
+}
 
-	useCase := application.NewConsume(repo)
-
+	useCase := application.NewConsumeRabbit(repo)
 
 	go func() {
 		err := useCase.Execute()

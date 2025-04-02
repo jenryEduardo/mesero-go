@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"bytes"
 	"time"
 
 	"github.com/streadway/amqp"
@@ -24,7 +25,7 @@ func NewRabbitMQRepository() (*RabbitMQRepository, error) {
 	return &RabbitMQRepository{conn: conn}, nil
 }
 
-func (r *RabbitMQRepository) ConsumeTransactions() error {
+func (r *RabbitMQRepository) ConsumeTransaction() error {
 	ch, err := r.conn.Channel()
 	if err != nil {
 		return fmt.Errorf("Error abriendo canal: %v", err)
@@ -56,27 +57,14 @@ func (r *RabbitMQRepository) ConsumeTransactions() error {
 			// Simular procesamiento
 			time.Sleep(2 * time.Second)
 
-			// Enviar confirmación
-			respCh, _ := r.conn.Channel()
-			defer respCh.Close()
-
-			responseQueue, _ := respCh.QueueDeclare("pedido_responses", true, false, false, false, nil)
-			response := map[string]interface{}{
-				"id":     pedido.IdPedido,
-				"status": "success",
-			}
-			responseBody, _ := json.Marshal(response)
-
-			err = respCh.Publish("", responseQueue.Name, false, false, amqp.Publishing{
-				ContentType: "application/json",
-				Body:        responseBody,
-			})
+			// Enviar datos a la API
+			jsonData, err := json.Marshal(pedido)
 			if err != nil {
-				fmt.Println("Error al enviar respuesta:", err)
+				fmt.Println("Error al serializar JSON para API:", err)
+				continue
 			}
 
-			// Hacer POST sin enviar JSON
-			req, err := http.NewRequest("POST", "http://localhost:3000/consume/", nil)
+			req, err := http.NewRequest("POST", "http://localhost:8081/pedidos/", bytes.NewBuffer(jsonData))
 			req.Header.Set("Content-Type", "application/json")
 
 			if err != nil {
