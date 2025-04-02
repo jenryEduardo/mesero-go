@@ -2,8 +2,8 @@ package infraestructure
 
 import (
 	"database/sql"
+	"log"
 	"second/historial-de-entregas/domain"
-
 )
 
 
@@ -91,4 +91,25 @@ func (r *MySQLRepository) Delete(idHistorial int) error{
 		return err
 	}
 	return nil
+}
+
+func (r *MySQLRepository) FindIdCircuito(idPedido int) (int, error) {
+	var idMesa int
+	var idCircuito int
+
+	// Primera consulta: obtener idMesa a partir de idPedido
+	err := r.db.QueryRow("SELECT idMesa FROM pedido WHERE idPedido=?", idPedido).Scan(&idMesa)
+	if err != nil {
+		log.Println("Error al obtener idMesa:", err)
+		return 0, err
+	}
+
+	// Segunda consulta: obtener idCircuito a partir de idMesa
+	err = r.db.QueryRow("SELECT idCircuito FROM circuito WHERE idMesa=?", idMesa).Scan(&idCircuito)
+	if err != nil {
+		log.Println("Error al obtener idCircuito:", err)
+		return 0, err
+	}
+
+	return idCircuito, nil
 }

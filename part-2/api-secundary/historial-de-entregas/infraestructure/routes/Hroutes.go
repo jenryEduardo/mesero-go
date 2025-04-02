@@ -14,10 +14,12 @@ func HistorialRoutes(router *gin.Engine) {
 	GetById := dependencies.GetHByID()
 	UpdateH := dependencies.UpdateHistorial()
 	DeleteH := dependencies.DeleteHistorial()
+	FindCircuito := dependencies.FindCircuito()
 
 	routes.POST("/", SaveH.Run)
 	routes.GET("/", GetAllH.Run)
 	routes.GET("/:id_historial", GetById.Run)
 	routes.PUT("/:id_historial", UpdateH.Run)
 	routes.DELETE("/id_historial", DeleteH.Run)
+	routes.GET("/circuito/:idPedido", FindCircuito.Run)
 }

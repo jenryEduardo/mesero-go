@@ -43,3 +43,8 @@ func DeleteHistorial() *controllers.DeleteHistorialCtrl {
 	ucDeleteH := application.NewDeleteHistorial(&mySQL)
 	return controllers.NewDeleteHistorialCtrl(ucDeleteH)
 }
+
+func FindCircuito() *controllers.FindIdCircuitoCtrl {
+	ucFindCircuito := application.NewFindIdCircuito(&mySQL)
+	return controllers.NewFindIdCircuitoCtrl(ucFindCircuito)
+}
