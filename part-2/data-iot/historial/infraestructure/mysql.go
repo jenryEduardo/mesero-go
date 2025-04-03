@@ -7,17 +7,15 @@ import (
 	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/streadway/amqp"
 )
 
 type MySQLRepository struct {
 	db         *sql.DB
 	MQTTClient mqtt.Client
-	RabbitConn *amqp.Connection
 }
 
-func NewMySQLRepository(db *sql.DB, mqttClient mqtt.Client, rabbitConn *amqp.Connection) *MySQLRepository {
-	return &MySQLRepository{db: db, MQTTClient: mqttClient, RabbitConn: rabbitConn}
+func NewMySQLRepository(db *sql.DB, mqttClient mqtt.Client) *MySQLRepository {
+	return &MySQLRepository{db: db, MQTTClient: mqttClient}
 }
 
 // FindColor busca el color a partir del idPedido y lo publica en MQTT
@@ -76,7 +74,7 @@ func (r *MySQLRepository) GetStatus() error {
 	return nil
 }
 
-// UpdateStatus actualiza el status en la BD y lo envía a RabbitMQ
+// UpdateStatus actualiza el status en la BD
 func (r *MySQLRepository) UpdateStatus(idPedido int, nuevoStatus string) error {
 	var idRobot int
 
@@ -92,8 +90,7 @@ func (r *MySQLRepository) UpdateStatus(idPedido int, nuevoStatus string) error {
 		return err
 	}
 
-	// Publicar en RabbitMQ
-	return r.publishToRabbitMQ(idPedido, nuevoStatus)
+	return nil
 }
 
 // publishToMQTT publica un mensaje en un tópico MQTT
@@ -101,32 +98,4 @@ func (r *MySQLRepository) publishToMQTT(topic string, message string) {
 	token := r.MQTTClient.Publish(topic, 0, false, message)
 	token.Wait()
 	log.Printf("Publicado en MQTT [%s]: %s", topic, message)
-}
-
-// publishToRabbitMQ publica un mensaje en una cola RabbitMQ
-func (r *MySQLRepository) publishToRabbitMQ(idPedido int, nuevoStatus string) error {
-	channel, err := r.RabbitConn.Channel()
-	if err != nil {
-		return fmt.Errorf("error al abrir canal RabbitMQ: %v", err)
-	}
-	defer channel.Close()
-
-	queueName := "status_queue"
-	_, err = channel.QueueDeclare(queueName, false, false, false, false, nil)
-	if err != nil {
-		return fmt.Errorf("error al declarar cola en RabbitMQ: %v", err)
-	}
-
-	message := fmt.Sprintf(`{"idPedido": %d, "status": "%s"}`, idPedido, nuevoStatus)
-	err = channel.Publish("", queueName, false, false, amqp.Publishing{
-		ContentType: "application/json",
-		Body:        []byte(message),
-	})
-
-	if err != nil {
-		return fmt.Errorf("error al publicar en RabbitMQ: %v", err)
-	}
-
-	log.Printf("Enviado a RabbitMQ: %s", message)
-	return nil
 }

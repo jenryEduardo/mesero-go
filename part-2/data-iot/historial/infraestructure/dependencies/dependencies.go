@@ -8,13 +8,13 @@ import (
 	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/streadway/amqp"
+	// "github.com/streadway/amqp"
 )
 
 var (
 	mySQL       infraestructure.MySQLRepository
 	mqttClient  mqtt.Client
-	rabbitConn  *amqp.Connection
+	// rabbitConn  *amqp.Connection
 )
 
 // Init inicializa la base de datos, MQTT y RabbitMQ
@@ -25,9 +25,9 @@ func Init() {
 	}
 
 	mqttClient = initMQTT()
-	rabbitConn = initRabbitMQ()
+	// rabbitConn = initRabbitMQ()
 
-	mySQL = *infraestructure.NewMySQLRepository(db, mqttClient, rabbitConn)
+	mySQL = *infraestructure.NewMySQLRepository(db, mqttClient)
 }
 
 // Inicializa el cliente MQTT
@@ -46,13 +46,13 @@ func initMQTT() mqtt.Client {
 }
 
 // Inicializa la conexión a RabbitMQ
-func initRabbitMQ() *amqp.Connection {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	if err != nil {
-		log.Fatalf("Error conectando a RabbitMQ: %v", err)
-	}
-	return conn
-}
+// func initRabbitMQ() *amqp.Connection {
+// 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+// 	if err != nil {
+// 		log.Fatalf("Error conectando a RabbitMQ: %v", err)
+// 	}
+// 	return conn
+// }
 
 // FindColor retorna el controlador de FindColor
 func FindColor() *controllers.FindColorCtrl {
