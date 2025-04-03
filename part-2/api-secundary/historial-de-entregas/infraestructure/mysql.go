@@ -105,7 +105,7 @@ func (r *MySQLRepository) FindIdCircuito(idPedido int) (int, error) {
 	}
 
 	// Segunda consulta: obtener idCircuito a partir de idMesa
-	err = r.db.QueryRow("SELECT idCircuito FROM circuito WHERE idMesa=?", idMesa).Scan(&idCircuito)
+	err = r.db.QueryRow("SELECT color FROM circuito WHERE idMesa=?", idMesa).Scan(&idCircuito)
 	if err != nil {
 		log.Println("Error al obtener idCircuito:", err)
 		return 0, err
