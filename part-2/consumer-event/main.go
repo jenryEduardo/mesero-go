@@ -1,17 +1,14 @@
 package main
 
-
-
 import (
 	"log"
 
-	countsRoutes "consumer/infraestructure/routes"
+	countsRoutes "consumer2/infraestructure/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 
-	
 func main(){
 	router := gin.Default()
 
@@ -26,8 +23,9 @@ func main(){
 	countsRoutes.SetUp(router)
 	
 
-	port := ":3000"
+	port := ":3002"
 	log.Println("Servidor escuchando en el puerto", port)
 	log.Fatal(router.Run(port))
 
+		
 }

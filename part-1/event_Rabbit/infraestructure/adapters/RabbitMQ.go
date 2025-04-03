@@ -75,7 +75,7 @@
 
 				fmt.Println("Mensaje recibido de transactions_responses:", response)
 
-				if response["id"] == pedido.ID {
+				if response["id"] == pedido.IdPedido {
 					status, ok := response["status"].(string)
 					if !ok {
 						fmt.Println("Error: no se pudo leer el estado de la transacción.")
