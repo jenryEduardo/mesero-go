@@ -14,8 +14,8 @@ func NewMySQLRepository(db *sql.DB) *MySQLRepository {
 }
 
 func (r *MySQLRepository) Save(robot domain.Robot) error {
-	query := "INSERT INTO robot(alias) VALUES (?)"
-	_, err := r.db.Exec(query, robot.Alias )
+	query := "INSERT INTO robot(idRobot, alias) VALUES (?,?)"
+	_, err := r.db.Exec(query,robot.IdRobot, robot.Alias )
 	if err != nil {
 		return err
 	}

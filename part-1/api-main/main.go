@@ -1,7 +1,5 @@
 package main
 
-
-
 import (
 	mesasRoutes "api-main/mesa/infraestructure/routes"
 	userRoutes "api-main/users/infraestructure/routes"
