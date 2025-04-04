@@ -6,7 +6,6 @@ type Iuser interface{
 	GetAllUser()([]User,error)
 	UpdateUser(id int,user *User)error
 	DeleteUser(id int)error
+	Login(email string,password string)(*User,string, error)
+	GetUserByEmail(email string)(*User,error)	
 }
-
-
-

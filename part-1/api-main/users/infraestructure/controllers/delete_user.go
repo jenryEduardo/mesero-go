@@ -10,22 +10,28 @@ import (
 )
 
 func DeleteUser(c *gin.Context) {
+	// Obtener el id desde los parámetros de la URL
+	id_string := c.Param("id")
 
-	id_string:= c.Param("id")
-
-	id,err:= strconv.Atoi(id_string)
-
-	if err!=nil{
-		c.JSON(http.StatusForbidden,gin.H{"not found":"no se pudo encontrar un id"})
+	// Convertir el id de string a int
+	id, err := strconv.Atoi(id_string)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		return
 	}
 
-	repo:=infraestructure.NewMySQLRepository()
-	useCase:=application.NewDeleteUser(repo)
+	// Crear la instancia del repositorio
+	repo := infraestructure.NewMySQLRepository()
 
-	if err:=useCase.Execute(id);err!=nil{
-		c.JSON(http.StatusBadRequest,gin.H{"ERROR":"verifique sus datos"})
+	// Crear el caso de uso de eliminar usuario
+	useCase := application.NewDeleteUser(repo)
+
+	// Ejecutar el caso de uso
+	if err := useCase.Execute(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo eliminar el usuario"})
+		return
 	}
 
-	c.JSON(http.StatusOK,gin.H{"ok":"se elimino el usuario con exito"})
-
+	// Retornar respuesta exitosa
+	c.JSON(http.StatusOK, gin.H{"message": "Usuario eliminado con éxito"})
 }

@@ -11,7 +11,7 @@ import (
 func GetuserAll(c *gin.Context){
 
 
-	repo:=infraestructure.NewMySQLRepository()
+	repo:= infraestructure.NewMySQLRepository()
 	useCase:=application.NewGetAllUser(repo)
 
 	data,err:=useCase.Execute();

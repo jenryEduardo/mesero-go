@@ -17,5 +17,6 @@ func SetupRoutesCount(router *gin.Engine) {
 		routes.GET("/", controllers.GetuserAll)
 		routes.PUT("/actualizar/:id", controllers.UpdateUser)
 		routes.DELETE("/eliminar-usuario/:id",controllers.DeleteUser)
-	}	
+		routes.POST("/login",controllers.Login)	
+		}	
 }	
