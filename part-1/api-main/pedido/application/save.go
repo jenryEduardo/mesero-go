@@ -10,6 +10,6 @@ func NewSavePedido(repo domain.Ipedido)*SavePedido{
 	return &SavePedido{repo: repo}
 }
 
-func (c *SavePedido)Execute(pedido domain.Pedido)error{
+func (c *SavePedido)Execute(pedido domain.Pedido)(int64,error){
 	return c.repo.Save(&pedido)
 }

@@ -86,3 +86,5 @@ func (r *MySQLRepository) GetById(id int) ([]domain.Robot, error) {
 
 	return robots, nil
 }
+
+

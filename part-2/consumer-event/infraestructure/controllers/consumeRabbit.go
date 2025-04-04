@@ -13,12 +13,12 @@ import (
 func StartRabbitMQConsumer() {
 	repo, err := adapters.NewRabbitMQRepository()
 	if err != nil {
-		log.Fatal("Error al conectar con RabbitMQ:", err)
+		log.Fatalf("Error inicializando RabbitMQ: %v", err)
 	}
-
+	
 	fmt.Println("Iniciando consumidor de RabbitMQ...")
-	err = repo.ConsumeTransactions()
-	if err != nil {
+	errors := repo.ConsumeTransaction()
+	if errors != nil {
 		log.Fatal("Error en el consumidor:", err)
 	}
 }

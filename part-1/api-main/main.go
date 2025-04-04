@@ -3,7 +3,7 @@ package main
 import (
 	mesasRoutes "api-main/mesa/infraestructure/routes"
 	userRoutes "api-main/users/infraestructure/routes"
-	productosRoutes "api-main/producto/infraestructure/routes"
+	productosRoutes "api-main/pedido/producto/infraestructure/routes"
 	pedidosRoutes "api-main/pedido/infraestructure/routes"
 	"github.com/gin-contrib/cors"
 	"log"

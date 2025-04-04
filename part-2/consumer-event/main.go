@@ -3,12 +3,12 @@ package main
 import (
 	consumerRoutes "consumer-event/infraestructure/routes"
 	"log"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
+func main(){
+
 	router := gin.Default()
 
 	// Configurar CORS

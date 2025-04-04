@@ -7,4 +7,5 @@ type Pedido struct{
 	Nombre_cliente string
 	Status string
 	Total float64
+	Detalles []DetallesPedido
 }
