@@ -24,7 +24,7 @@ func (r *MySQLRepository)Save(pedido *domain.Pedido)(int64,error){
 		return 0,err
 	}
 
-	// Obtener el ID del pedido recién insertado
+	// Obtener el ID del pedido recién insertadox1
 	pedidoID, err := result.LastInsertId()
 	if err != nil {
 		return  0,err
@@ -32,8 +32,8 @@ func (r *MySQLRepository)Save(pedido *domain.Pedido)(int64,error){
 
 	// Insertar los productos en la tabla "detalles_pedido"
 	for _, detalle := range pedido.Detalles {
-		_, err := r.conn.DB.Exec("INSERT INTO detalles_pedido (idPedido, idProducto, nombre_producto, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)",
-			pedidoID, detalle.IdProducto, detalle.NombreProducto, detalle.Cantidad, detalle.PrecioUnitario, detalle.Subtotal)
+		_, err := r.conn.DB.Exec("INSERT INTO detalles_pedido (idPedido, idProducto, cantidad, subtotal) VALUES (?, ?, ?, ?)",
+			pedidoID, detalle.IdProducto, detalle.Cantidad, detalle.Subtotal)
 		if err != nil {
 			return 0,err
 		}
