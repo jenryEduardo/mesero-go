@@ -45,14 +45,14 @@ func (r *MySQLRepository) Save(p *domain.User) error {
 		return err
 	}
 
-	query := "INSERT INTO usuarios (name, type_user, last_name, email, password) VALUES (?,?,?,?)"
-	_, err = r.conn.DB.Exec(query, &p.Name, &p.Type_user, &p.Last_name, &p.Email, &hashedPassword)
+	query := "INSERT INTO usuarios (name, user_type, last_name, email, password) VALUES (?,?,?,?,?)"
+	_, err = r.conn.DB.Exec(query, &p.Name, &p.User_type, &p.Last_name, &p.Email, &hashedPassword)
 	return err
 }
 
 // GetUserById obtiene un usuario por ID
 func (r *MySQLRepository) GetUserById(id int) ([]domain.User, error) {
-	query := "SELECT idUsuario, name, type_user, last_name, email, password FROM usuarios WHERE idUsuario = ?"
+	query := "SELECT idUsuario, name, user_type, last_name, email, password FROM usuarios WHERE idUsuario = ?"
 	rows, err := r.conn.DB.Query(query, id)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (r *MySQLRepository) GetUserById(id int) ([]domain.User, error) {
 
 	for rows.Next() {
 		var user domain.User
-		err := rows.Scan(&user.ID, &user.Name, &user.Type_user, &user.Last_name, &user.Email, &user.Password)
+		err := rows.Scan(&user.ID, &user.Name, &user.User_type, &user.Last_name, &user.Email, &user.Password)
 		if err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (r *MySQLRepository) GetUserById(id int) ([]domain.User, error) {
 
 // GetAllUser obtiene todos los usuarios
 func (r *MySQLRepository) GetAllUser() ([]domain.User, error) {
-	query := "SELECT idUsuario, name, type_user, last_name, email, password FROM usuarios"
+	query := "SELECT idUsuario, name, user_type, last_name, email, password FROM usuarios"
 	rows, err := r.conn.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (r *MySQLRepository) GetAllUser() ([]domain.User, error) {
 
 	for rows.Next() {
 		var user domain.User
-		err := rows.Scan(&user.ID, &user.Name, &user.Type_user,&user.Last_name, &user.Email, &user.Password)
+		err := rows.Scan(&user.ID, &user.Name, &user.User_type,&user.Last_name, &user.Email, &user.Password)
 		if err != nil {
 			return nil, err
 		}
@@ -112,8 +112,8 @@ func (r *MySQLRepository) UpdateUser(id int, p *domain.User) error {
 		return err
 	}
 
-	query := "UPDATE usuarios SET name=?, type_user=?,last_name=?, email=?, password=? WHERE idUsuario=?"
-	_, err = r.conn.DB.Exec(query, &p.Name, &p.Type_user ,&p.Last_name, &p.Email, &hashedPassword, id)
+	query := "UPDATE usuarios SET name=?, user_type=?,last_name=?, email=?, password=? WHERE idUsuario=?"
+	_, err = r.conn.DB.Exec(query, &p.Name, &p.User_type ,&p.Last_name, &p.Email, &hashedPassword, id)
 	return err
 }
 
@@ -129,11 +129,11 @@ func (r *MySQLRepository) DeleteUser(id int) error {
 
 // GetUserByEmail busca un usuario por email
 func (r *MySQLRepository) GetUserByEmail(email string) (*domain.User, error) {
-	query := "SELECT idUsuario, name, type_user, last_name, email, password FROM usuarios WHERE email = ? LIMIT 1"
+	query := "SELECT idUsuario, name, user_type, last_name, email, password FROM usuarios WHERE email = ? LIMIT 1"
 	row := r.conn.DB.QueryRow(query, email)
 
 	var user domain.User
-	err := row.Scan(&user.ID, &user.Name, &user.Type_user,&user.Last_name, &user.Email, &user.Password)
+	err := row.Scan(&user.ID, &user.Name, &user.User_type,&user.Last_name, &user.Email, &user.Password)
 	if err != nil {
 		return nil, fmt.Errorf("usuario no encontrado o error en la consulta: %w", err)
 	}
@@ -143,11 +143,11 @@ func (r *MySQLRepository) GetUserByEmail(email string) (*domain.User, error) {
 
 func (r *MySQLRepository) Login(email string, password string) (*domain.User, string, error) {
 	// Buscar el usuario por email
-	query := "SELECT idUsuario, name, type_user, last_name, email, password FROM usuarios WHERE email = ?"
+	query := "SELECT idUsuario, name, user_type, last_name, email, password FROM usuarios WHERE email = ?"
 	row := r.conn.DB.QueryRow(query, email)
 
 	var user domain.User
-	if err := row.Scan(&user.ID, &user.Name, &user.Type_user, &user.Last_name, &user.Email, &user.Password); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.User_type, &user.Last_name, &user.Email, &user.Password); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, "", fmt.Errorf("usuario no encontrado")
 		}
