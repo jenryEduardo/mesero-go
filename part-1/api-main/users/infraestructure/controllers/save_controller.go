@@ -30,7 +30,7 @@ func CreateUser(c *gin.Context){
 		fmt.Println("error al guardar los datos",err)
 	}
 	
-	c.JSON(http.StatusOK,gin.H{"ok":"dato guardado exitosamente"})
+	c.JSON(http.StatusOK,gin.H{"ok":"dato guardado exitosamente", "user":user})
 
 
 }

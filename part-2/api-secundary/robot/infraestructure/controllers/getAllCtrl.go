@@ -24,9 +24,6 @@ func (ctrl *GetAllRobotsCtrl) Run(c *gin.Context) {
 			"error": err.Error(),
 		})
 	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"status": true,
-			"data": robots,
-		})
+		c.JSON(http.StatusOK, robots)
 	}
 }
