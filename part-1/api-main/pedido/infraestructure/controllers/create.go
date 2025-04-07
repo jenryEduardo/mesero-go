@@ -4,8 +4,7 @@ import (
 	"api-main/pedido/application"
 	"api-main/pedido/domain"
 	"api-main/pedido/infraestructure"
-	"bytes"
-	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,44 +13,37 @@ import (
 func CreatePedido(c *gin.Context) {
 	var pedido domain.Pedido
 
-	// Validar JSON de entrada
 	if err := c.ShouldBindJSON(&pedido); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo procesar el JSON de entrada"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no se encontró nada en el archivo JSON"})
 		return
 	}
 
-	// Crear repositorio y caso de uso
 	repo := infraestructure.NewMySQLRepository()
 	useCase := application.NewSavePedido(repo)
 
-	// Ejecutar el caso de uso para guardar el pedido
 	id, err := useCase.Execute(pedido)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Crear JSON para enviar al otro servidor
-	payload, err := json.Marshal(gin.H{"id": id})
+	// Convertir id a string y usarlo en la URL
+	url := fmt.Sprintf("http://localhost:3002/consumer/%d", id)
+
+	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear el JSON de salida"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creando la solicitud HTTP"})
 		return
 	}
+	req.Header.Set("Content-Type", "application/json")
 
-	// Enviar el JSON al otro servidor
-	resp, err := http.Post("http://localhost:3002/consumer/", "application/json", bytes.NewBuffer(payload))
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar el ID al otro servidor"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al enviar la solicitud al otro servidor"})
 		return
 	}
 	defer resp.Body.Close()
 
-	// Verificar si el servidor externo responde correctamente
-	if resp.StatusCode != http.StatusOK {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "El servidor externo devolvió un estado inesperado", "status": resp.StatusCode})
-		return
-	}
-
-	// Respuesta exitosa
-	c.JSON(http.StatusOK, gin.H{"ok": id, "message": "ID enviado correctamente"})
+	c.JSON(http.StatusOK, gin.H{"ok": id, "message": "ID enviado correctamente como parámetro en la URL"})
 }

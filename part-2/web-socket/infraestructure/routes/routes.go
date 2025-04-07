@@ -12,7 +12,7 @@ func InitializeRoutes(wsController *controllers.WebSocketController) {
     http.HandleFunc("/ws", wsController.HandleWebSocket)
 
     // Ruta para recibir el idPedido desde la API y enviarlo a WebSocket
-    http.HandleFunc("/enviarPedido", func(w http.ResponseWriter, r *http.Request) {
+    http.HandleFunc("/enviarPedido/", func(w http.ResponseWriter, r *http.Request) {
         if r.Method != http.MethodPost {
             http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
             return

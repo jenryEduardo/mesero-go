@@ -2,26 +2,17 @@ package controllers
 
 import (
 	"consumer/application"
-	"consumer/domain"
 	"consumer/infraestructure/adapters"
 	"fmt"
-	"log"
-	"net/http"
+	"strconv"
 	"github.com/gin-gonic/gin"
 )
 
 func SaveInRbbitmq(c *gin.Context) {
 
+	IdString:=c.Param("idPedido")
+	id,err:=strconv.Atoi(IdString)
 
-		var cuenta domain.RabbitMQ
-		if err := c.ShouldBindJSON(&cuenta); err != nil {
-			log.Println("Error al procesar el JSON:", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Error al procesar el JSON", "details": err.Error()})
-			return
-		}
-	
-
-	
 
 		repo,err:=adapters.NewRabbitMQRepository()
 		if err!=nil{
@@ -29,17 +20,13 @@ func SaveInRbbitmq(c *gin.Context) {
 		}
 
 		useCase:=application.NewRabbitSave(repo)
-		success,err:=useCase.Execute(&cuenta)
+		success,err:=useCase.Execute(id)
 
-
-
-		
 		if err!=nil{
 			fmt.Println("error al ejecutar la transaccion")
 		}else if success{
-			fmt.Println("transaccion exitosa")
+			fmt.Println("transaccion exitosa",id)
+			c.JSON(201, gin.H{"message": "Consumo iniciado en background"})
 		}
 		
-		c.JSON(200, gin.H{"message": "Consumo iniciado en background"})
-
 }

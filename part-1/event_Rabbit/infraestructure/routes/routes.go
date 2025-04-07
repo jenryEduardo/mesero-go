@@ -10,6 +10,6 @@ func SetUp(router *gin.Engine){
 
 	routes:=router.Group("/consumer")
 
-	routes.POST("/",controllers.SaveInRbbitmq)
+	routes.POST("/:idPedido",controllers.SaveInRbbitmq)
 
 }
