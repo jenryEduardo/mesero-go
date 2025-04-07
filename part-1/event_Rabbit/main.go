@@ -1,15 +1,11 @@
 package main
 
-
-
 import (
 	"log"
-
 	countsRoutes "consumer/infraestructure/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
 
 	
 func main(){
@@ -30,4 +26,5 @@ func main(){
 	log.Println("Servidor escuchando en el puerto", port)
 	log.Fatal(router.Run(port))
 
+		
 }

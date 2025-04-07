@@ -1,14 +1,14 @@
 package main
 
 import (
-	consumerRoutes "consumer-event/infraestructure/routes"
 	"log"
+	"consumer-event/application"
+	"consumer-event/infraestructure/adapters"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func main(){
-
+func main() {
 	router := gin.Default()
 
 	// Configurar CORS
@@ -19,9 +19,24 @@ func main(){
 		AllowCredentials: true,
 	}))
 
-	consumerRoutes.Routes(router)
+	// 👉 Inicializar el consumidor aquí directamente al iniciar la app
+	go func() {
+		repo, err := adapters.NewRabbitMQRepository()
+		if err != nil {
+			log.Fatalf("❌ Error al conectarse a RabbitMQ: %v", err)
+		}
 
-	port := ":3000"
+		useCase := application.NewConsume(repo)
+
+		err = useCase.Execute()
+		if err != nil {
+			log.Printf("❌ Error ejecutando el consumidor: %v", err)
+		}
+	}()
+
+
+	// Iniciar servidor
+	port := ":3003"
 	log.Println("Servidor escuchando en el puerto", port)
 	log.Fatal(router.Run(port))
 }

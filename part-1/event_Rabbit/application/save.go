@@ -12,17 +12,6 @@ func NewRabbitSave(repo domain.Irabbitmq)*saveInRbbitmq{
 }
 
 
-func(c *saveInRbbitmq)Execute(data *domain.RabbitMQ)(bool,error){
-	return c.repo.PublishTransaction(data)
+func(c *saveInRbbitmq)Execute(id int)(bool,error){
+	return c.repo.PublishTransaction(id)
 }
-
-
-
-
-
-
-
-
-
-
-

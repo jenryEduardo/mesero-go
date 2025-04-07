@@ -10,7 +10,7 @@ import (
 	routesStatus "second/robot-status/infraestructure/routes"
 	dependenciesRobot "second/robot/infraestructure/dependencies"
 	routesRobot "second/robot/infraestructure/routes"
-
+	pedidosRoute "second/pedido/infraestructure/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -40,6 +40,9 @@ func main() {
 	//ROBOT-STATUS
 	dependenciesStatus.Init()
 	routesStatus.RSroutes(router)
+
+
+	pedidosRoute.SetUpRoutes(router)
 
 	port := ":8081"
 	log.Println("Servidor en el puerto:", port)
