@@ -93,7 +93,7 @@ func (r *MySQLRepository)Delete(id int)error{
 }
 
 func (r *MySQLRepository) GetAll() ([]domain.Pedido, error) {
-	query := "SELECT idPedido,idProduct ,idMesa, nombre_cliente, status, total FROM pedido"
+	query := "SELECT idPedido ,idMesa, nombre_cliente, status, total FROM pedido"
 	rows, err := r.conn.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -118,7 +118,7 @@ func (r *MySQLRepository) GetAll() ([]domain.Pedido, error) {
 
 
 func (r*MySQLRepository)GetById(id int)([]domain.Pedido,error){
-	query:=("SELECT idPedido,idProduct, idMesa, nombre_cliente, status, total FROM pedido WHERE idPedido=?")
+	query:=("SELECT idPedido, idMesa, nombre_cliente, status, total FROM pedido WHERE idPedido=?")
 	rows,err:=r.conn.DB.Query(query,id)
 
 	if err!=nil{
