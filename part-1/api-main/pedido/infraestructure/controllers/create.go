@@ -11,23 +11,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreatePedido(c *gin.Context){
-
+func CreatePedido(c *gin.Context) {
 	var pedido domain.Pedido
 
-	if err:=c.ShouldBindJSON(&pedido);err!=nil{
-		c.JSON(http.StatusNotFound,gin.H{"error":"no se encontro nada el archivo json"})
-	}
-
-	repo:=infraestructure.NewMySQLRepository()
-	useCase:=application.NewSavePedido(repo)
-
-	 id,err:=useCase.Execute(pedido);
-	if err!=nil{
-		c.JSON(http.StatusBadRequest,gin.H{"error":err})
+	// Validar JSON de entrada
+	if err := c.ShouldBindJSON(&pedido); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No se pudo procesar el JSON de entrada"})
 		return
 	}
-  
+
+	// Crear repositorio y caso de uso
+	repo := infraestructure.NewMySQLRepository()
+	useCase := application.NewSavePedido(repo)
+
+	// Ejecutar el caso de uso para guardar el pedido
+	id, err := useCase.Execute(pedido)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Crear JSON para enviar al otro servidor
 	payload, err := json.Marshal(gin.H{"id": id})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al crear el JSON de salida"})
@@ -42,7 +46,12 @@ func CreatePedido(c *gin.Context){
 	}
 	defer resp.Body.Close()
 
+	// Verificar si el servidor externo responde correctamente
+	if resp.StatusCode != http.StatusOK {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "El servidor externo devolvió un estado inesperado", "status": resp.StatusCode})
+		return
+	}
+
+	// Respuesta exitosa
 	c.JSON(http.StatusOK, gin.H{"ok": id, "message": "ID enviado correctamente"})
-
-
 }
